@@ -64,7 +64,19 @@ export class BuntListComponent implements OnInit {
                 }).subscribe(() => {
                     this.avbrytRedigera();
                     this.reload();
-            });
+                });
         }
+    }
+
+    flyttaUpp(buntladeStalle: BuntladeStalle) {
+        this.http.put(`/api/bunt/${buntladeStalle.id}/index/${buntladeStalle.index - 1}`, {}).subscribe(() => {
+            this.reload();
+        });
+    }
+
+    flyttaNer(buntladeStalle: BuntladeStalle) {
+        this.http.put(`/api/bunt/${buntladeStalle.id}/index/${buntladeStalle.index + 1}`, {}).subscribe(() => {
+            this.reload();
+        });
     }
 }

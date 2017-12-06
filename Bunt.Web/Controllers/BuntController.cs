@@ -36,5 +36,11 @@ namespace Bunt.Web.Controllers
             command.Id = id;
             await _mediator.Send(command);
         }
+
+        [HttpPut("{id}/index/{newIndex}")]
+        public async Task Flytta(FlyttaBuntladeStalle.Command command)
+        {
+            await _mediator.Send(command);
+        }
     }
 }
