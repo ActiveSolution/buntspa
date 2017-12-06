@@ -36,5 +36,17 @@ namespace Bunt.Web.Controllers
             command.Id = id;
             await _mediator.Send(command);
         }
+
+        [HttpPost("{id}/flyttaUpp")]
+        public async Task FlyttaUpp(FlyttaUppBuntladeStalle.Command command)
+        {
+            await _mediator.Send(command);
+        }
+
+        [HttpPost("{id}/flyttaNer")]
+        public async Task FlyttaNer(FlyttaNerBuntladeStalle.Command command)
+        {
+            await _mediator.Send(command);
+        }
     }
 }

@@ -67,4 +67,16 @@ export class BuntListComponent implements OnInit {
             });
         }
     }
+
+    flyttaUpp(buntladeStalle: BuntladeStalle) {
+        this.http.post(`/api/bunt/${buntladeStalle.id}/flyttaUpp`, {}).subscribe(() => {
+            this.reload();
+        });
+    }
+
+    flyttaNer(buntladeStalle: BuntladeStalle) {
+        this.http.post(`/api/bunt/${buntladeStalle.id}/flyttaNer`, {}).subscribe(() => {
+            this.reload();
+        });
+    }
 }
