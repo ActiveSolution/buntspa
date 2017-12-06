@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Bunt.Web
 {
@@ -27,6 +28,13 @@ namespace Bunt.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var logger = new LoggerConfiguration()
+                .WriteTo.MSSqlServer(Configuration.GetConnectionString("BuntDb"), "Log")
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            services.AddSingleton<ILogger>(logger);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient<IConnectionFactory>(provider => new SqlConnectionFactory(Configuration.GetConnectionString("BuntDb")));
             services.AddDbContext<BuntDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BuntDb")));
             services.AddMediatR(typeof(ListaBuntladeStallen.Handler));

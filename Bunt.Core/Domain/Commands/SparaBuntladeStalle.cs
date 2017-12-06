@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Bunt.Core.Domain.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Bunt.Core.Domain.Commands
 {
@@ -19,10 +20,12 @@ namespace Bunt.Core.Domain.Commands
         public class Handler : IRequestHandler<Command>
         {
             private readonly BuntDbContext _db;
+            private readonly ILogger _logger;
 
-            public Handler(BuntDbContext db)
+            public Handler(BuntDbContext db, ILogger logger)
             {
                 _db = db;
+                _logger = logger;
             }
 
             public async Task Handle(Command command, CancellationToken cancellationToken)
@@ -33,11 +36,13 @@ namespace Bunt.Core.Domain.Commands
                 {
                     var lastIndex = await _db.BuntladeStallen.MaxAsync(b => b.Index, cancellationToken);
                     buntladeStalle = new BuntladeStalle(command.Id, command.Adress, command.Typ, lastIndex + 1);
+                    _logger.Information("Nytt buntlådeställe skapat med id: {Id}", buntladeStalle.Id);
                     _db.Add(buntladeStalle);
                 }
                 else
                 {
                     buntladeStalle.Redigera(command.Adress, command.Typ);
+                    _logger.Information("Uppdaterade befintligt buntådeställe med id: {Id}", buntladeStalle.Id);
                 }
 
                 await _db.SaveChangesAsync(cancellationToken);
