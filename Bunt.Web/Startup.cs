@@ -13,6 +13,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Bunt.Web
 {
@@ -33,12 +38,24 @@ namespace Bunt.Web
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
+            .AddCookie();
             services.AddSingleton<ILogger>(logger);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient<IConnectionFactory>(provider => new SqlConnectionFactory(Configuration.GetConnectionString("BuntDb")));
             services.AddDbContext<BuntDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BuntDb")));
             services.AddMediatR(typeof(ListaBuntladeStallen.Handler));
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                var builder = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser();
+                options.Filters.Add(new AuthorizeFilter(builder.Build()));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +75,7 @@ namespace Bunt.Web
             }
 
             app.UseStaticFiles();
-
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
