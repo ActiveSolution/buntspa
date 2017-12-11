@@ -35,6 +35,7 @@ namespace Bunt.Web
 
             services.AddSingleton<ILogger>(logger);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AccessBehavior<,>));
             services.AddTransient<IConnectionFactory>(provider => new SqlConnectionFactory(Configuration.GetConnectionString("BuntDb")));
             services.AddDbContext<BuntDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BuntDb")));
             services.AddMediatR(typeof(ListaBuntladeStallen.Handler));
