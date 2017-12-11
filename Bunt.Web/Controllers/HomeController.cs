@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Linq;
 
 namespace Bunt.Web.Controllers
 {
@@ -18,6 +17,18 @@ namespace Bunt.Web.Controllers
         {
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             return View();
+        }
+
+        // GET: /Home/ClaimsTest
+        public ActionResult ClaimsTest()
+        {
+            IEnumerable<Claim> claims = null;
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null && identity.Claims != null && identity.Claims.Any())
+            {
+                claims = identity.Claims;
+            }
+            return View(claims);
         }
     }
 }
