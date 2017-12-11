@@ -3,11 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Linq;
+using Bunt.Core.Security;
 
 namespace Bunt.Web.Controllers
 {
+
     public class HomeController : Controller
     {
+        private readonly ICurrentUser _currentUser;
+        public HomeController(ICurrentUser currentUser)
+        {
+            _currentUser = currentUser;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -22,12 +30,7 @@ namespace Bunt.Web.Controllers
         // GET: /Home/ClaimsTest
         public ActionResult ClaimsTest()
         {
-            IEnumerable<Claim> claims = null;
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity != null && identity.Claims != null && identity.Claims.Any())
-            {
-                claims = identity.Claims;
-            }
+            var claims = _currentUser.Claims;
             return View(claims);
         }
     }
