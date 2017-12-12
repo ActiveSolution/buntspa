@@ -47,7 +47,7 @@ export class BuntListComponent implements OnInit {
     }
 
     laggTill() {
-        this.redigera({ id: uuid(), index: 0, adress: "", typ: "1", buntladeNummer: 0, isDeletableByUser: false });
+        this.redigera({ id: uuid(), index: 0, adress: "", typ: "1", buntladeNummer: 0});
     }
 
     avbrytRedigera() {

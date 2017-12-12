@@ -19,12 +19,10 @@ namespace Bunt.Core.Domain.Queries
         public class Handler : IRequestHandler<Query, IEnumerable<BuntladeStalle>>
         {
             private readonly IConnectionFactory _connectionFactory;
-            public ICurrentUser _currentUser { get; }
 
-            public Handler(IConnectionFactory connectionFactory, ICurrentUser currentUser)
+            public Handler(IConnectionFactory connectionFactory)
             {
                 _connectionFactory = connectionFactory;
-                _currentUser = currentUser;
             }
 
             public async Task<IEnumerable<BuntladeStalle>> Handle(Query query, CancellationToken cancellationToken)
@@ -34,8 +32,8 @@ namespace Bunt.Core.Domain.Queries
                 {
                     buntladestallen = (await conn.QueryAsync<BuntladeStalle>("SELECT * FROM BuntladeStalle ORDER BY [Index]")).ToList();
                 }
-                var isDeletableByUser = await _currentUser.FunctionAccessCheck("TABORTBUNTLADESTALLE");
-                return buntladestallen.Select(b => { b.IsDeletableByUser = isDeletableByUser; return b; });
+
+                return buntladestallen;
             }
         }
 
@@ -46,7 +44,6 @@ namespace Bunt.Core.Domain.Queries
             public string Adress { get; set; }
             public string Typ { get; set; }
             public int? BuntladeNummer { get; set; }
-            public bool IsDeletableByUser { get; set; }
         }
     }
 }

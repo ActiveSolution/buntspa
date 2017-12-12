@@ -10,10 +10,9 @@ namespace Bunt.Web.Controllers
 
     public class HomeController : Controller
     {
-        private readonly ICurrentUser _currentUser;
-        public HomeController(ICurrentUser currentUser)
+        public HomeController()
         {
-            _currentUser = currentUser;
+
         }
 
         public IActionResult Index()
@@ -25,13 +24,6 @@ namespace Bunt.Web.Controllers
         {
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             return View();
-        }
-
-        // GET: /Home/ClaimsTest
-        public ActionResult ClaimsTest()
-        {
-            var claims = _currentUser.Claims;
-            return View(claims);
         }
     }
 }

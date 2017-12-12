@@ -8,7 +8,6 @@ using Bunt.Core.Security;
 
 namespace Bunt.Core.Domain.Commands
 {
-    [FunctionAccess("TABORTBUNTLADESTALLE")]
     public class TaBortBuntladeStalle
     {
         public class Command : IRequest

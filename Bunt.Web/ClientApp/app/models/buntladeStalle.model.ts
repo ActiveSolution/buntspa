@@ -4,5 +4,4 @@
     public adress: string;
     public typ: string;
     public buntladeNummer: number;
-    public isDeletableByUser: boolean;
 }
