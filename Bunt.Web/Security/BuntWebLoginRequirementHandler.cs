@@ -15,7 +15,7 @@ namespace Bunt.Web.Security
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, BuntWebLoginRequirement requirement)
         {
-            if (await _currentUser.IsAllowedToLogin())
+            if (await _currentUser.IsAllowedToLoginAsync())
             {
                 context.Succeed(requirement);
             }

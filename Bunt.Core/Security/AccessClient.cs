@@ -18,6 +18,11 @@ namespace Bunt.Core.Security
 
         public Task<bool> FunctionAccessCheck(int userId, string function)
         {
+            // fejka att Access checken returnerar false för just TABORTBUNTLADESTALLE
+            if (function == "TABORTBUNTLADESTALLE")
+                return Task.FromResult(false);
+
+            // annars fejka allting till true
             return Task.FromResult(true);
         }
     }

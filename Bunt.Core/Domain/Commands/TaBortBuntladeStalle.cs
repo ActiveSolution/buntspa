@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bunt.Core.Infrastructure;
-using Dapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Bunt.Core.Security;
 
 namespace Bunt.Core.Domain.Commands
 {
+    [FunctionAccess("TABORTBUNTLADESTALLE")]
     public class TaBortBuntladeStalle
     {
         public class Command : IRequest

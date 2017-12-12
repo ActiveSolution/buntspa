@@ -5,6 +5,7 @@ using Bunt.Core.Domain.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Linq;
 
 namespace Bunt.Core.Domain.Commands
 {
@@ -31,10 +32,9 @@ namespace Bunt.Core.Domain.Commands
             public async Task Handle(Command command, CancellationToken cancellationToken)
             {
                 var buntladeStalle = await _db.BuntladeStallen.SingleOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
-
                 if (buntladeStalle == null)
                 {
-                    var lastIndex = await _db.BuntladeStallen.MaxAsync(b => b.Index, cancellationToken);
+                    var lastIndex = await _db.BuntladeStallen.Select(b => b.Index).DefaultIfEmpty(0).MaxAsync();
                     buntladeStalle = new BuntladeStalle(command.Id, command.Adress, command.Typ, lastIndex + 1);
                     _logger.Information("Nytt buntlådeställe skapat med id: {Id}", buntladeStalle.Id);
                     _db.Add(buntladeStalle);

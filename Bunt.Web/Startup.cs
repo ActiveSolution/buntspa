@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Bunt.Core;
 using Bunt.Core.Domain.Queries;
 using Bunt.Core.Infrastructure;
@@ -46,21 +42,18 @@ namespace Bunt.Web
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-
             .AddAzureAd(options => Configuration.Bind("AzureAd", options))
-
             .AddCookie();
+
             services.AddSingleton<ILogger>(logger);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AccessBehavior<,>));
             services.AddTransient<IConnectionFactory>(provider => new SqlConnectionFactory(Configuration.GetConnectionString("BuntDb")));
             services.AddDbContext<BuntDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BuntDb")));
             services.AddMediatR(typeof(ListaBuntladeStallen.Handler));
-
             services.AddTransient<IAuthorizationHandler, BuntWebLoginRequirementHandler>();
             services.AddTransient(provider => provider.GetService<IHttpContextAccessor>().HttpContext.User);
             services.AddTransient<ICurrentUser, ClaimsPrincipalCurrentUser>();
-
             services.AddTransient<IAccessClient>(provider => new HardcodedAccessClient(new AccessUser { UserId = 0 }));
 
             services.AddMvc(options =>
@@ -87,8 +80,6 @@ namespace Bunt.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-
 
             app.UseStaticFiles();
             app.UseAuthentication();

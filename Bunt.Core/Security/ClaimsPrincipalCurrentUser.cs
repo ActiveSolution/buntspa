@@ -29,15 +29,14 @@ namespace Bunt.Core.Security
             return accessUser.UserId;
         }
 
-        public Task<bool> IsAllowedToLogin()
+        public async Task<bool> IsAllowedToLoginAsync()
         {
-            return FunctionAccessCheck("BUNTLADESTALLE_LOGIN");
+            return await FunctionAccessCheck("BUNTLADESTALLE_LOGIN");
         }
 
-        private async Task<bool> FunctionAccessCheck(string function)
+        public async Task<bool> FunctionAccessCheck(string function)
         {
-            return true;
-            //return await _accessClient.FunctionAccessCheck(await GetUserId(), function);
+            return await _accessClient.FunctionAccessCheck(await GetUserId(), function);
         }
     }
 }

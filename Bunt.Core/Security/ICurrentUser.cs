@@ -9,6 +9,7 @@ namespace Bunt.Core.Security
         string Username { get; }
         IEnumerable<Claim> Claims { get; }
         Task<int> GetUserId();
-        Task<bool> IsAllowedToLogin();
+        Task<bool> IsAllowedToLoginAsync();
+        Task<bool> FunctionAccessCheck(string functionToCheckAccessFor);
     }
 }

@@ -19,7 +19,7 @@
             <td>{{buntladeStalle.buntladeNummer}}</td>
             <td>
                 <button type="button" class="btn" (click)="redigera(buntladeStalle)">Redigera</button>
-                <button type="button" class="btn" (click)="taBort(buntladeStalle)">Ta bort</button>
+                <button type="button" class="btn" [disabled]="!buntladeStalle.isDeletableByUser" (click)="taBort(buntladeStalle)">Ta bort</button>
                 <button type="button" class="btn">
                     <span class="glyphicon glyphicon-arrow-up"></span>
                 </button>
