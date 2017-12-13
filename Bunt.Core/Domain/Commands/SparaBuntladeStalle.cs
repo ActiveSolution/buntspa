@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bunt.Core.Domain.Model;
@@ -34,7 +35,7 @@ namespace Bunt.Core.Domain.Commands
 
                 if (buntladeStalle == null)
                 {
-                    var lastIndex = await _db.BuntladeStallen.MaxAsync(b => b.Index, cancellationToken);
+                    var lastIndex = await _db.BuntladeStallen.MaxAsync(b => b.Index as int?, cancellationToken) ?? 0;
                     buntladeStalle = new BuntladeStalle(command.Id, command.Adress, command.Typ, lastIndex + 1);
                     _logger.Information("Nytt buntlådeställe skapat med id: {Id}", buntladeStalle.Id);
                     _db.Add(buntladeStalle);
