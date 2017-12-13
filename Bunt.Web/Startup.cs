@@ -17,6 +17,10 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Bunt.Core.Security;
 using Microsoft.AspNetCore.Http;
 using Bunt.Web.Security;
+using Microsoft.ApplicationInsights.Channel;
+using Serilog.Events;
+using System;
+using Serilog.ExtensionMethods;
 
 namespace Bunt.Web
 {
@@ -34,6 +38,7 @@ namespace Bunt.Web
         {
             var logger = new LoggerConfiguration()
                 .WriteTo.MSSqlServer(Configuration.GetConnectionString("BuntDb"), "Log")
+                .WriteTo.ApplicationInsights("bfe8faf2-332f-4d95-8d51-b658caed73a3", ConvertLogEventsToCustomEventTelemetry)
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
@@ -93,6 +98,17 @@ namespace Bunt.Web
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+        }
+
+        private static ITelemetry ConvertLogEventsToCustomEventTelemetry(LogEvent logEvent, IFormatProvider formatProvider)
+        {
+            var telemetry = logEvent.ToDefaultEventTelemetry(
+                formatProvider,
+                includeLogLevelAsProperty: true,
+                includeRenderedMessageAsProperty: true,
+                includeMessageTemplateAsProperty: true);
+            telemetry.Name = logEvent.RenderMessage();
+            return telemetry;
         }
     }
 }
